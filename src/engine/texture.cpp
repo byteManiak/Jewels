@@ -69,7 +69,6 @@ void deleteTexture(std::string name)
 		return;
 	}
 
-	//textures[name]->deleteTexture();
 	delete(textures[name]);
 	textures.erase(name);
 }
@@ -86,7 +85,7 @@ void drawTexture(std::string name, int x, int y, int w, int h, int sx, int sy, i
 {
 	if (textures.find(name) == textures.end())
 	{
-		std::cerr << "Texture \"" << name << " is not loaded in memory" << std::endl;
+		std::cerr << "No texture named \"" << name << "\" is currently loaded in memory" << std::endl;
 		return;
 	}
 

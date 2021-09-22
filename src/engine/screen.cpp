@@ -34,13 +34,16 @@ void initScreen(const char *title, int xRes, int yRes, bool intScaling)
 									 xRes, yRes);
 
 	addColorPalette("Default", 0x060601, 0x0b3e08, 0x489a0d, 0xdaf222);
-	addColorPalette("Amber",   0x0d0405, 0x5e1210, 0xd35600, 0xfed018);
-	addColorPalette("Purple",  0x380031, 0x8a157a, 0xc23e80, 0xff9999);
-	addColorPalette("Lluv",    0x300030, 0x602878, 0xf89020, 0xf8f088);
-	addColorPalette("Meadow",  0x012824, 0x265935, 0xff4d6d, 0xfcdeea);
 	setColorPalette("Default");
 
 	//IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_TIF | IMG_INIT_WEBP);
+}
+
+void deinitScreen()
+{
+	SDL_DestroyTexture(renderTarget);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
 }
 
 void beginDraw()

@@ -16,6 +16,8 @@ extern SDL_Renderer *renderer;
  */
 void initScreen(const char *title, int xRes, int yRes, bool intScaling = true);
 
+void deinitScreen();
+
 void beginDraw();
 void endDraw();
 void draw();
