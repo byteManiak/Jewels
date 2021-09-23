@@ -9,7 +9,7 @@ class SpinnyGem
 public:
 	SpinnyGem(int type)
 	{
-		texture = "gem" + std::to_string(type);
+		sprite = new Sprite("gem" + std::to_string(type), 15, 15, 6, 100);
 		startTick = SDL_GetTicks();
 	}
 
@@ -33,13 +33,13 @@ public:
 			y = YCENTRE-11-cos((SDL_GetTicks() - startTick) / 600.f)*(YCENTRE/2.f);
 		}
 
-		drawTexture(texture, x, y, 15, 15, 15 * ((SDL_GetTicks() - startTick)/100%6), 0, 15, 15);
+		sprite->draw(x, y);
 	}
 
 private:
 	int startTick;
 	bool isLooping = false;
-	std::string texture;
+	Sprite *sprite;
 };
 
 MainMenu::MainMenu()
@@ -48,7 +48,7 @@ MainMenu::MainMenu()
 
 	createTexture("assets/logo.pcx", "logo");
 	createSound("assets/intro.wav", "intro");
-	soundChannel = playSound("intro");
+	//soundChannel = playSound("intro");
 }
 
 #define LOGO_SIZE_X 47

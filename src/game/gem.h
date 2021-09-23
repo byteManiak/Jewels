@@ -1,21 +1,17 @@
 #pragma once
 
-#include <string>
-
-enum GemType
-{
-	DIAMOND,
-	EMERALD,
-	RUBY,
-	TOPAZ,
-	SAPPHIRE,
-	AMETHYST,
-	GARNET
-};
+#include "engine/engine.h"
 
 class Gem
 {
-	Gem(GemType gemType);
+public:
+	Gem(int type);
+	~Gem();
+	void draw(int x, int y);
+
+	int type;
+	bool isSelected = false;
+
 private:
-	std::string texture;
+	Sprite *sprite;
 };

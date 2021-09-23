@@ -2,6 +2,8 @@
 
 #include "game/common.h"
 
+Sprite *test;
+
 Game::Game()
 {
 	initSound();
@@ -20,7 +22,13 @@ Game::Game()
 	createTexture("assets/jewel5.pcx", "gem5");
 	createTexture("assets/jewel6.pcx", "gem6");
 
+	test = new Sprite("gem1", 15, 15, 6, 200);
+
 	menu = new MainMenu();
+
+	srand(time(NULL));
+
+	board = new Board();
 }
 
 bool Game::update()
@@ -31,6 +39,7 @@ bool Game::update()
 
 	beginDraw();
 	menu->update();
+	board->update();
 	endDraw();
 
 	return true;

@@ -1,5 +1,5 @@
 #include "game/mainmenu.h"
-#include "game/gem.h"
+#include "game/board.h"
 
 class Game
 {
@@ -10,4 +10,5 @@ public:
 
 private:
 	MainMenu *menu;
+	Board *board;
 };

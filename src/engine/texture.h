@@ -22,4 +22,17 @@ void deleteTexture(std::string name);
  */
 void updateTextures();
 
+/**
+ * @brief Draw a texture with scaling factor
+ * 
+ * @param name Name of the texture to draw
+ * @param x Base X coordinate to draw the texture at
+ * @param y Base Y coordinate to draw the texture at
+ * @param w Width of the draw output
+ * @param h Height of the draw output
+ * @param sx Source X offset of the texture
+ * @param sy Source Y offset of the texture
+ * @param sw Source width starting from X offset of the texture
+ * @param sh Source height starting from Y offset of the texture
+ */
 void drawTexture(std::string name, int x, int y, int w, int h, int sx = 0, int sy = 0, int sw = 0, int sh = 0);
