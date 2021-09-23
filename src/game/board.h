@@ -13,5 +13,4 @@ public:
 
 private:
 	Gem *gems[8][8];
-	int baseX, baseY;
 };

@@ -71,3 +71,15 @@ void endDraw()
 	SDL_RenderCopy(renderer, renderTarget, NULL, NULL);
 	SDL_RenderPresent(renderer);
 }
+
+void drawRectangle(int x, int y, int w, int h, int color, bool fill)
+{
+	SDL_Rect r = {x, y, w, h};
+	SDL_SetRenderDrawColor(renderer,
+						   currentPalette->colors[color].r,
+						   currentPalette->colors[color].g,
+						   currentPalette->colors[color].b,
+						   0);
+	if (fill) SDL_RenderFillRect(renderer, &r);
+	else SDL_RenderDrawRect(renderer, &r);
+}

@@ -11,11 +11,13 @@
                 "-o",
                 "${workspaceFolder}/build/jewels",
                 "-I${workspaceFolder}/src",
+                "-L${workspaceFolder}/build",
                 "-lSDL2main",
                 "-lSDL2",
                 "-lSDL2_image",
                 "-lSDL2_mixer",
-                "-lSDL2_ttf"
+                "-lSDL2_ttf",
+                "-Wl,-rpath=\".\""
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

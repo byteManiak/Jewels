@@ -1,11 +1,12 @@
 #include "game/board.h"
 
 #include <iostream>
+
+#define BASEX 30
+#define BASEY 1
+
 Board::Board()
 {
-	baseX = 24;
-	baseY = 3;
-
 	// Gen random gems
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
@@ -16,8 +17,6 @@ Board::Board()
 			while (newGem == gems[i][j-1]->type && newGem == gems[i][j-2]->type)
 			{
 				newGem = rand()%6+1;
-				std::cout << i << ' ' << j << ' ' << newGem << std::endl;
-				//newGem = 0;
 			}
 		}
 		gems[i][j] = new Gem(newGem);
@@ -49,5 +48,8 @@ void Board::update()
 {
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
-		gems[i][j]->draw(baseX+i*16, baseY+j*16);
+	{
+		drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 2);
+		gems[i][j]->draw(BASEX+1+i*16, BASEY+1+j*16);
+	}
 }

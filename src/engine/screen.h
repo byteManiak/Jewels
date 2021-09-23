@@ -22,4 +22,4 @@ void beginDraw();
 void endDraw();
 void draw();
 
-void drawTexture(SDL_Surface *surface, uint16_t, uint16_t, uint16_t, uint16_t);
+void drawRectangle(int x, int y, int w, int h, int color, bool fill = false);
