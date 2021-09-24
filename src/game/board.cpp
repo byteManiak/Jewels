@@ -250,6 +250,7 @@ void Board::genBoard()
 	for(int j = 0; j < 8; j++)
 		if (!gems[i][j]) gems[i][j] = new Gem(rand()%6+1, i, j);
 
+	avoidMatches();
 	while(hasMatch)	avoidMatches();
 }
 
