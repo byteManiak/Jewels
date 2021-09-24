@@ -253,10 +253,15 @@ void Board::genBoard()
 bool Board::hasMatch()
 {
 	for(int i = 0; i < 6; i++)
+	for(int j = 0; j < 8; j++)
+	{
+		if (gems[i][j]->type == gems[i+1][j]->type && gems[i][j]->type == gems[i+2][j]->type) return true;
+	}
+
+	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 6; j++)
 	{
 		if (gems[i][j]->type == gems[i][j+1]->type && gems[i][j]->type == gems[i][j+2]->type) return true;
-		if (gems[i][j]->type == gems[i+1][j]->type && gems[i][j]->type == gems[i+2][j]->type) return true;
 	}
 
 	return false;
