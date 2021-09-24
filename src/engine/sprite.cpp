@@ -31,3 +31,8 @@ void Sprite::draw(int x, int y)
 
 	drawTexture(texture, x, y, tileW, tileH, tileW*currentTile, 0, tileW, tileH);
 }
+
+void Sprite::setSprite(std::string texture)
+{
+	this->texture = texture;
+}

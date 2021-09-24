@@ -11,4 +11,5 @@ public:
 private:
 	MainMenu *menu;
 	Board *board;
+	bool inMenu = true;
 };

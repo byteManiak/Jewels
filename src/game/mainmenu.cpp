@@ -48,7 +48,7 @@ MainMenu::MainMenu()
 
 	createTexture("assets/logo.pcx", "logo");
 	createSound("assets/intro.wav", "intro");
-	//soundChannel = playSound("intro");
+	soundChannel = playSound("intro");
 }
 
 #define LOGO_SIZE_X 47
@@ -62,6 +62,7 @@ bool MainMenu::update()
 	{
 		logoY = -LOGO_SIZE_Y*2 + (SDL_GetTicks() - startTick) / 40.f;
 		if (logoY >= YCENTRE - LOGO_SIZE_Y - 8) logoMoving = false;
+		if (isKeyPressed(SDL_SCANCODE_RETURN)) logoMoving = false;
 	}
 	else
 	{
@@ -77,7 +78,6 @@ bool MainMenu::update()
 
 		if (isKeyPressed(SDL_SCANCODE_RETURN))
 		{
-			std::cout << "Yay" << std::endl;
 			retVal = true;
 		}
 	}
@@ -85,5 +85,5 @@ bool MainMenu::update()
 	drawTexture("logo", 31, logoY, LOGO_SIZE_X*2, LOGO_SIZE_Y*2, 0, 0, LOGO_SIZE_X, LOGO_SIZE_Y);
 	for(auto &i : gems) i.update();
 
-	return false;
+	return retVal;
 }
