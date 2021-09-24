@@ -13,8 +13,9 @@ public:
 	void setCoords(int x, int y);
 
 	int type = 0;
-	bool isSelected = false;
 	bool isMoving = false;
+
+	bool isMatched = false;
 
 private:
 	int xdest, ydest;

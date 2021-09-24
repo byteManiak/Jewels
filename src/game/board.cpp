@@ -24,7 +24,7 @@ void Board::update()
 			if (xCursor == 0) {}
 			else
 			{
-				swap(xCursor, yCursor, xCursor-1, yCursor);
+				swap(xCursor, yCursor, xCursor-1, yCursor, true);
 				isSelecting = !isSelecting;
 			}
 		}
@@ -33,7 +33,7 @@ void Board::update()
 			if (xCursor == 7) {}
 			else
 			{
-				swap(xCursor, yCursor, xCursor+1, yCursor);
+				swap(xCursor, yCursor, xCursor+1, yCursor, true);
 				isSelecting = !isSelecting;
 			}
 		}
@@ -42,7 +42,7 @@ void Board::update()
 			if (yCursor == 0) {}
 			else
 			{
-				swap(xCursor, yCursor, xCursor, yCursor-1);
+				swap(xCursor, yCursor, xCursor, yCursor-1, true);
 				isSelecting = !isSelecting;
 			}
 		}
@@ -51,7 +51,7 @@ void Board::update()
 			if (yCursor == 7) {}
 			else
 			{
-				swap(xCursor, yCursor, xCursor, yCursor+1);
+				swap(xCursor, yCursor, xCursor, yCursor+1, true);
 				isSelecting = !isSelecting;
 			}
 		}
@@ -92,10 +92,13 @@ void Board::update()
 
 	if (!isAnimating)
 	{
+		findMatch(false);
+		if (hasMatch) sweepMatches();
+
 		if (swapState == SWAP_FIRST)
 		{
-			if (hasMatch()) swapState = NO_SWAP;
-			else swap(x1swap, y1swap, x2swap, y2swap);
+			if (hasMatch) swapState = NO_SWAP;
+			else swap(x1swap, y1swap, x2swap, y2swap, true);
 		}
 		else if (swapState == SWAP_BACK) swapState = NO_SWAP;
 	}
@@ -208,6 +211,8 @@ void Board::genPartialMatch(int x, int y, int type)
 
 void Board::avoidMatches()
 {
+	findMatch(true);
+
 	for(int i = 1; i <= 6; i++)
 	for(int j = 0; j < 8; j++)
 		if (gems[i-1][j]->type == gems[i][j]->type && gems[i][j]->type == gems[i+1][j]->type)
@@ -244,37 +249,69 @@ void Board::genBoard()
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
 		if (!gems[i][j]) gems[i][j] = new Gem(rand()%6+1, i, j);
-	
-	avoidMatches();
-	// Run twice to (hopefully) avoid edge cases
-	avoidMatches();
+
+	while(hasMatch)	avoidMatches();
 }
 
-bool Board::hasMatch()
+void Board::findMatch(bool initBoardStage)
 {
+	hasMatch = false;
+
 	for(int i = 0; i < 6; i++)
 	for(int j = 0; j < 8; j++)
 	{
-		if (gems[i][j]->type == gems[i+1][j]->type && gems[i][j]->type == gems[i+2][j]->type) return true;
+		if (gems[i][j]->type == gems[i+1][j]->type && gems[i][j]->type == gems[i+2][j]->type)
+		{
+			if (!initBoardStage)
+			{
+				gems[i][j]->isMatched = true;
+				gems[i+1][j]->isMatched = true;
+				gems[i+2][j]->isMatched = true;
+			}
+			hasMatch = true;
+		}
 	}
 
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 6; j++)
 	{
-		if (gems[i][j]->type == gems[i][j+1]->type && gems[i][j]->type == gems[i][j+2]->type) return true;
+		if (gems[i][j]->type == gems[i][j+1]->type && gems[i][j]->type == gems[i][j+2]->type)
+		{
+			gems[i][j]->isMatched = true;
+			gems[i][j+1]->isMatched = true;
+			gems[i][j+2]->isMatched = true;
+			hasMatch = true;
+		}
 	}
-
-	return false;
 }
 
-void Board::swap(int x1, int y1, int x2, int y2)
+void Board::sweepMatches()
+{
+	for(int i = 0; i < 8; i++)
+	for(int j = 0; j < 8; j++)
+	{
+		if (gems[i][j]->isMatched)
+		{
+			delete(gems[i][j]);
+			gems[i][j] = nullptr;
+			for (int k = j; k > 0; k--)
+				swap(i, k, i, k-1, false);
+			gems[i][0] = new Gem(rand()%6+1, i, 0);
+		}
+	}
+}
+
+void Board::swap(int x1, int y1, int x2, int y2, bool moveCursor)
 {
 	std::swap(gems[x1][y1], gems[x2][y2]);
 
-	xCursor = x2; yCursor = y2;
+	if (moveCursor)
+	{
+		xCursor = x2; yCursor = y2;
+	}
 
-	gems[x1][y1]->setCoords(x1, y1);
-	gems[x2][y2]->setCoords(x2, y2);
+	if (gems[x1][y1]) gems[x1][y1]->setCoords(x1, y1);
+	if (gems[x2][y2]) gems[x2][y2]->setCoords(x2, y2);
 
 	x1swap = x2; y1swap = y2;
 	x2swap = x1; y2swap = y1;

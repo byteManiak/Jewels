@@ -18,10 +18,12 @@ private:
 	void avoidMatches();
 
 	// Match finder
-	bool hasMatch();
+	void findMatch(bool initBoardStage);
+	bool hasMatch = false;
+	void sweepMatches();
 
 	// Gem swapping
-	void swap(int x1, int y1, int x2, int y2);
+	void swap(int x1, int y1, int x2, int y2, bool moveCursor);
 
 	enum SwapState
 	{
