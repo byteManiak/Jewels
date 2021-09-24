@@ -78,6 +78,7 @@ bool MainMenu::update()
 
 		if (isKeyPressed(SDL_SCANCODE_RETURN))
 		{
+			stopSound(soundChannel);
 			retVal = true;
 		}
 	}

@@ -39,13 +39,22 @@ bool Game::update()
 	if (isKeyPressed(SDL_SCANCODE_ESCAPE)) return false;
 
 	if (isKeyPressed(SDL_SCANCODE_SPACE)) setNextColorPalette();
+
 	beginDraw();
+
 	if (inMenu)
 	{
-		if (menu->update()) inMenu = false;
+		if (menu->update())
+		{
+			inMenu = false;
+			board->genBoard();
+		}
 	}
 	else
+	{
 		board->update();
+	}
+
 	endDraw();
 
 	return true;

@@ -3,16 +3,13 @@
 #include <iostream>
 #include <vector>
 
-#define BASEX 30
-#define BASEY 1
-
-Board::Board()
-{
-	genBoard();
-}
-
 void Board::update()
 {
+	if (isKeyPressed(SDL_SCANCODE_Z) || isKeyPressed(SDL_SCANCODE_X))
+	{
+		isSelecting = !isSelecting;
+	}
+
 	if (!isSelecting)
 	{
 		if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
@@ -20,7 +17,7 @@ void Board::update()
 		if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
 		if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
 	}
-	else
+	else if (!isAnimating)
 	{
 		if (isKeyPressed(SDL_SCANCODE_LEFT))
 		{
@@ -31,7 +28,7 @@ void Board::update()
 				isSelecting = !isSelecting;
 			}
 		}
-		if (isKeyPressed(SDL_SCANCODE_RIGHT))
+		else if (isKeyPressed(SDL_SCANCODE_RIGHT))
 		{
 			if (xCursor == 7) {}
 			else
@@ -40,7 +37,7 @@ void Board::update()
 				isSelecting = !isSelecting;
 			}
 		}
-		if (isKeyPressed(SDL_SCANCODE_UP))
+		else if (isKeyPressed(SDL_SCANCODE_UP))
 		{
 			if (yCursor == 0) {}
 			else
@@ -49,7 +46,7 @@ void Board::update()
 				isSelecting = !isSelecting;
 			}
 		}
-		if (isKeyPressed(SDL_SCANCODE_DOWN))
+		else if (isKeyPressed(SDL_SCANCODE_DOWN))
 		{
 			if (yCursor == 7) {}
 			else
@@ -66,10 +63,7 @@ void Board::update()
 	if (yCursor < 0) yCursor = 0;
 	else if (yCursor > 7) yCursor = 7;
 
-	if (isKeyPressed(SDL_SCANCODE_Z) || isKeyPressed(SDL_SCANCODE_X))
-	{
-		isSelecting = !isSelecting;
-	}
+	bool anyGemMoving = false;
 
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
@@ -77,22 +71,40 @@ void Board::update()
 		if (i == xCursor && j == yCursor)
 		{
 			drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 2, true);
-			if(gems[i][j]) gems[i][j]->draw(BASEX+1+i*16, BASEY+1+j*16, true);
+			if(gems[i][j])
+			{
+				gems[i][j]->draw(true);
+				if (gems[i][j]->isMoving) anyGemMoving = true;
+			}
 		}
 		else
 		{
 			drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 2);
-			if (gems[i][j]) gems[i][j]->draw(BASEX+1+i*16, BASEY+1+j*16);
+			if (gems[i][j])
+			{
+				gems[i][j]->draw();
+				if (gems[i][j]->isMoving) anyGemMoving = true;
+			}
 		}
+	}
+
+	isAnimating = anyGemMoving;
+
+	if (!isAnimating)
+	{
+		if (swapState == SWAP_FIRST)
+		{
+			if (hasMatch()) swapState = NO_SWAP;
+			else swap(x1swap, y1swap, x2swap, y2swap);
+		}
+		else if (swapState == SWAP_BACK) swapState = NO_SWAP;
 	}
 }
 
 enum Dir
 {
-	LEFT,
-	RIGHT,
-	UP,
-	DOWN
+	LEFT, RIGHT,
+	UP, DOWN
 };
 
 bool Board::isSlotAvailable(int x, int y)
@@ -187,9 +199,9 @@ void Board::genPartialMatch(int x, int y, int type)
 
 	if (isSlotAvailable(x1,y1) && isSlotAvailable(x2,y2))
 	{
-		gems[x][y] = new Gem(type);
-		gems[x1][y1] = new Gem(type);
-		gems[x2][y2] = new Gem(type);
+		gems[x][y] = new Gem(type, x, y);
+		gems[x1][y1] = new Gem(type, x1, y1);
+		gems[x2][y2] = new Gem(type, x2, y2);
 	}
 	else return genPartialMatch(rand()%8, rand()%8, type);
 }
@@ -231,15 +243,37 @@ void Board::genBoard()
 	// Gen random gems for the rest of the board
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
-		if (!gems[i][j]) gems[i][j] = new Gem(rand()%6+1);
+		if (!gems[i][j]) gems[i][j] = new Gem(rand()%6+1, i, j);
 	
 	avoidMatches();
 	// Run twice to (hopefully) avoid edge cases
 	avoidMatches();
 }
 
+bool Board::hasMatch()
+{
+	for(int i = 0; i < 6; i++)
+	for(int j = 0; j < 6; j++)
+	{
+		if (gems[i][j]->type == gems[i][j+1]->type && gems[i][j]->type == gems[i][j+2]->type) return true;
+		if (gems[i][j]->type == gems[i+1][j]->type && gems[i][j]->type == gems[i+2][j]->type) return true;
+	}
+
+	return false;
+}
+
 void Board::swap(int x1, int y1, int x2, int y2)
 {
-	gems[x1][y1]->isSwapping = true;
-	gems[x2][y2]->isSwapping = true;
+	std::swap(gems[x1][y1], gems[x2][y2]);
+
+	xCursor = x2; yCursor = y2;
+
+	gems[x1][y1]->setCoords(x1, y1);
+	gems[x2][y2]->setCoords(x2, y2);
+
+	x1swap = x2; y1swap = y2;
+	x2swap = x1; y2swap = y1;
+
+	if (swapState == NO_SWAP) swapState = SWAP_FIRST;
+	else if (swapState == SWAP_FIRST) swapState = SWAP_BACK;
 }

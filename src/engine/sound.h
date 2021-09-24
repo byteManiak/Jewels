@@ -7,4 +7,5 @@ void deinitSound();
 void createSound(std::string path, std::string name);
 void deleteSound(std::string name);
 int playSound(std::string name);
+void stopSound(int channel);
 bool isSoundPlaying(int channel);

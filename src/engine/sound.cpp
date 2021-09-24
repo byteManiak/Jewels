@@ -55,6 +55,11 @@ int playSound(std::string name)
 	return Mix_PlayChannel(-1, sounds[name], 0);
 }
 
+void stopSound(int channel)
+{
+	Mix_HaltChannel(channel);
+}
+
 bool isSoundPlaying(int channel)
 {
 	return Mix_Playing(channel) != 0;
