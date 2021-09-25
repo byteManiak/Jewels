@@ -278,9 +278,12 @@ void Board::findMatch(bool initBoardStage)
 	{
 		if (gems[i][j]->type == gems[i][j+1]->type && gems[i][j]->type == gems[i][j+2]->type)
 		{
-			gems[i][j]->isMatched = true;
-			gems[i][j+1]->isMatched = true;
-			gems[i][j+2]->isMatched = true;
+			if (!initBoardStage)
+			{
+				gems[i][j]->isMatched = true;
+				gems[i][j+1]->isMatched = true;
+				gems[i][j+2]->isMatched = true;
+			}
 			hasMatch = true;
 		}
 	}
