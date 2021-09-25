@@ -8,6 +8,9 @@
 class Board
 {
 public:
+	Board();
+	~Board();
+
 	void update();
 
 	void genBoard();
@@ -43,4 +46,6 @@ private:
 
 	// Board animations
 	bool isAnimating = false;
+
+	Sprite *arrows;
 };

@@ -3,14 +3,24 @@
 #include <iostream>
 #include <vector>
 
+Board::Board()
+{
+	arrows = new Sprite("arrows", 9, 9, 4, 0);
+}
+
+Board::~Board()
+{
+	delete arrows;
+	for(int i = 0; i < 8; i++)
+	for(int j = 0; j < 8; j++)
+		delete gems[i][j];
+}
+
 void Board::update()
 {
-	if (isKeyPressed(SDL_SCANCODE_Z) || isKeyPressed(SDL_SCANCODE_X))
-	{
-		isSelecting = !isSelecting;
-	}
+	isSelecting = isKeyDown(SDL_SCANCODE_Z);
 
-	if (!isSelecting)
+	if (!isKeyDown(SDL_SCANCODE_Z))
 	{
 		if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
 		if (isKeyPressed(SDL_SCANCODE_RIGHT)) xCursor++;
@@ -21,35 +31,28 @@ void Board::update()
 	{
 		if (isKeyPressed(SDL_SCANCODE_LEFT))
 		{
-			if (xCursor == 0) {}
-			else
+			if (xCursor > 0)
 			{
 				swap(xCursor, yCursor, xCursor-1, yCursor, true);
-				isSelecting = !isSelecting;
 			}
 		}
 		else if (isKeyPressed(SDL_SCANCODE_RIGHT))
 		{
-			if (xCursor == 7) {}
-			else
+			if (xCursor < 7)
 			{
 				swap(xCursor, yCursor, xCursor+1, yCursor, true);
-				isSelecting = !isSelecting;
 			}
 		}
 		else if (isKeyPressed(SDL_SCANCODE_UP))
 		{
-			if (yCursor == 0) {}
-			else
+			if (yCursor > 0)
 			{
 				swap(xCursor, yCursor, xCursor, yCursor-1, true);
-				isSelecting = !isSelecting;
 			}
 		}
 		else if (isKeyPressed(SDL_SCANCODE_DOWN))
 		{
-			if (yCursor == 7) {}
-			else
+			if (yCursor < 7)
 			{
 				swap(xCursor, yCursor, xCursor, yCursor+1, true);
 				isSelecting = !isSelecting;
@@ -63,7 +66,7 @@ void Board::update()
 	if (yCursor < 0) yCursor = 0;
 	else if (yCursor > 7) yCursor = 7;
 
-	bool anyGemMoving = false;
+	isAnimating = false;
 
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
@@ -74,7 +77,7 @@ void Board::update()
 			if(gems[i][j])
 			{
 				gems[i][j]->draw(true);
-				if (gems[i][j]->isMoving) anyGemMoving = true;
+				if (gems[i][j]->isMoving) isAnimating = true;
 			}
 		}
 		else
@@ -83,15 +86,21 @@ void Board::update()
 			if (gems[i][j])
 			{
 				gems[i][j]->draw();
-				if (gems[i][j]->isMoving) anyGemMoving = true;
+				if (gems[i][j]->isMoving) isAnimating = true;
 			}
 		}
 	}
 
-	isAnimating = anyGemMoving;
-
 	if (!isAnimating)
 	{
+		if (isSelecting && swapState == NO_SWAP)
+		{
+			if (xCursor > 0) arrows->drawTile(BASEX+xCursor*16-7, BASEY+yCursor*16+4, 0);
+			if (xCursor < 7) arrows->drawTile(BASEX+xCursor*16+15, BASEY+yCursor*16+4, 1);
+			if (yCursor > 0) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16-7, 3);
+			if (yCursor < 7) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16+15, 2);
+		}
+
 		findMatch(false);
 		if (hasMatch) sweepMatches();
 
