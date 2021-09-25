@@ -6,5 +6,6 @@
 #include "engine/sound.h"
 #include "engine/input.h"
 #include "engine/sprite.h"
+#include "engine/text.h"
 
 void updateEvents();

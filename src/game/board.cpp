@@ -30,7 +30,7 @@ void Board::update()
 		if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
 		if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
 	}
-	else if (!isAnimating)
+	else if (!isAnimating && !shortWait)
 	{
 		if (isKeyPressed(SDL_SCANCODE_LEFT))
 		{
@@ -94,11 +94,13 @@ void Board::update()
 		}
 	}
 
+	findMatch(false);
+
 	if (!isAnimating)
 	{
 		if (shortWait)
 		{
-			if (SDL_GetTicks() - waitTick > 900)
+			if (SDL_GetTicks() - waitTick > 900 || !hasMatch)
 			{
 				shortWait = false;
 			}
@@ -113,7 +115,6 @@ void Board::update()
 				if (yCursor < 7) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16+15, 2);
 			}
 
-			findMatch(false);
 			if (hasMatch)
 			{
 				combo++;
@@ -130,6 +131,8 @@ void Board::update()
 			else if (swapState == SWAP_BACK) swapState = NO_SWAP;
 		}
 	}
+
+	score.draw();
 }
 
 enum Dir
@@ -328,12 +331,17 @@ void Board::sweepMatches()
 			{
 				delete(gems[i][j]);
 				gems[i][j] = nullptr;
+
 				for (int k = j; k > 0; k--)
 					swap(i, k, i, k-1, false);
+
 				gems[i][0] = new Gem(rand()%6+1, i, 0, gemsMatched);
 				gemsMatched++;
+			
 				shortWait = true;
 				waitTick = SDL_GetTicks();
+
+				score.addScore(combo+1);
 			}
 		}
 	}

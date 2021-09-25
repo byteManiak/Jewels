@@ -10,6 +10,8 @@ Game::Game()
 
 	initScreen("Jewels!", XRES, YRES);
 
+	loadFont();
+
 	addColorPalette("Amber",   0x0d0405, 0x5e1210, 0xd35600, 0xfed018);
 
 	createTexture("assets/jewel1.pcx", "gem1");

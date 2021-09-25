@@ -4,6 +4,7 @@
 
 #include "game/common.h"
 #include "game/gem.h"
+#include "game/score.h"
 
 class Board
 {
@@ -15,6 +16,9 @@ public:
 
 	void genBoard();
 private:
+	Score score;
+
+	// Wait between combos
 	bool shortWait = false;
 	int waitTick;
 

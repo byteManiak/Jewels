@@ -30,7 +30,7 @@ public:
 		// kept in memory to be able to re-apply the color palette change when needed.
 
 		SDL_SetSurfacePalette(surface, currentPalette);
-		SDL_PixelFormat *pf = SDL_AllocFormat(SDL_PIXELFORMAT_BGRA32);
+		SDL_PixelFormat *pf = SDL_AllocFormat(SDL_PIXELFORMAT_RGBA32);
 
 		SDL_Surface *tempSurface = SDL_ConvertSurface(surface, pf, 0);
 		SDL_SetColorKey(tempSurface, SDL_TRUE, 0xFFFFFF);

@@ -1,6 +1,8 @@
 #include "game/mainmenu.h"
 #include "game/board.h"
 
+#include "engine/engine.h"
+
 class Game
 {
 public:
