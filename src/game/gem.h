@@ -5,7 +5,7 @@
 class Gem
 {
 public:
-	Gem(int type, int x, int y);
+	Gem(int type, int x, int y, int yo = 0);
 	~Gem();
 	void draw(bool isSelected = false);
 	void setNextType();

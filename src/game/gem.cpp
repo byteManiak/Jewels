@@ -2,13 +2,15 @@
 
 #include "game/common.h"
 
-Gem::Gem(int type, int xd, int yd)
+#include <iostream>
+
+Gem::Gem(int type, int xd, int yd, int yo)
 {
 	sprite = new Sprite("gem" + std::to_string(type), 15, 15, 6, 100); 
 	this->type = type;
 	x = xdest = BASEX+1+xd*16;
 	ydest = BASEY+1+yd*16;
-	y = BASEY-16;
+	y = BASEY-16-yo*16;
 
 	startTick = SDL_GetTicks();
 }
@@ -20,25 +22,29 @@ Gem::~Gem()
 
 void Gem::draw(bool isSelected)
 {
+	float dx = abs(x-xdest)+1;
+	float dy = abs(y-ydest)+1;
+	if (dy > 16) dy = 16;
+
 	if ((int)x < xdest)
 	{
-		x += (abs(x-xdest)+1)/20*(SDL_GetTicks() - startTick)/6.f;
+		x += dx/20*(SDL_GetTicks() - startTick)/6.f;
 		if (x > xdest) x = xdest;
 	}
 	else if ((int)x > xdest)
 	{
-		x -= (abs(x-xdest)+1)/20*(SDL_GetTicks() - startTick)/6.f;
+		x -= dx/20*(SDL_GetTicks() - startTick)/6.f;
 		if (x < xdest) x = xdest;
 	}
 
 	if ((int)y < ydest)
 	{
-		y += (abs(y-ydest)+1)/20*(SDL_GetTicks() - startTick)/6.f;
+		y += dy/20*(SDL_GetTicks() - startTick)/6.f;
 		if (y > ydest) y = ydest;
 	}
 	else if ((int)y > ydest)
 	{
-		y -= (abs(y-ydest)+1)/20*(SDL_GetTicks() - startTick)/6.f;
+		y -= dy/20*(SDL_GetTicks() - startTick)/6.f;
 		if (y < ydest) y = ydest;
 	}
 

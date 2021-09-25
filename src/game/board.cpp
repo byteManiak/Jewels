@@ -292,15 +292,19 @@ void Board::findMatch(bool initBoardStage)
 void Board::sweepMatches()
 {
 	for(int i = 0; i < 8; i++)
-	for(int j = 0; j < 8; j++)
 	{
-		if (gems[i][j]->isMatched)
+		int gemsMatched = 0;
+		for(int j = 0; j < 8; j++)
 		{
-			delete(gems[i][j]);
-			gems[i][j] = nullptr;
-			for (int k = j; k > 0; k--)
-				swap(i, k, i, k-1, false);
-			gems[i][0] = new Gem(rand()%6+1, i, 0);
+			if (gems[i][j]->isMatched)
+			{
+				delete(gems[i][j]);
+				gems[i][j] = nullptr;
+				for (int k = j; k > 0; k--)
+					swap(i, k, i, k-1, false);
+				gems[i][0] = new Gem(rand()%6+1, i, 0, gemsMatched);
+				gemsMatched++;
+			}
 		}
 	}
 }
