@@ -35,8 +35,6 @@ void initScreen(const char *title, int xRes, int yRes, bool intScaling)
 
 	addColorPalette("Default", 0x060601, 0x0b3e08, 0x489a0d, 0xdaf222);
 	setColorPalette("Default");
-
-	//IMG_Init(IMG_INIT_PNG | IMG_INIT_JPG | IMG_INIT_TIF | IMG_INIT_WEBP);
 }
 
 void deinitScreen()

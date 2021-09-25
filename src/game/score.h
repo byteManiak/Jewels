@@ -2,6 +2,8 @@
 
 #include "game/common.h"
 
+#include <string>
+
 class Score
 {
 public:
@@ -14,4 +16,5 @@ public:
 private:
 	int level = 1;
 	int score = 0;
+	std::string sz;
 };

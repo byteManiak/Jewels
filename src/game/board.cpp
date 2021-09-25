@@ -23,7 +23,7 @@ void Board::update()
 {
 	isSelecting = isKeyDown(SDL_SCANCODE_Z);
 
-	if (!isKeyDown(SDL_SCANCODE_Z))
+	if (!isSelecting)
 	{
 		if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
 		if (isKeyPressed(SDL_SCANCODE_RIGHT)) xCursor++;
@@ -58,7 +58,6 @@ void Board::update()
 			if (yCursor < 7)
 			{
 				swap(xCursor, yCursor, xCursor, yCursor+1, true);
-				isSelecting = !isSelecting;
 			}
 		}
 	}
@@ -115,6 +114,13 @@ void Board::update()
 				if (yCursor < 7) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16+15, 2);
 			}
 
+			if (swapState == SWAP_FIRST)
+			{
+				if (hasMatch) swapState = NO_SWAP;
+				else swap(x1swap, y1swap, x2swap, y2swap, true);
+			}
+			else if (swapState == SWAP_BACK) swapState = NO_SWAP;
+
 			if (hasMatch)
 			{
 				combo++;
@@ -122,13 +128,6 @@ void Board::update()
 				sweepMatches();
 			}
 			else combo = -1;
-
-			if (swapState == SWAP_FIRST)
-			{
-				if (hasMatch) swapState = NO_SWAP;
-				else swap(x1swap, y1swap, x2swap, y2swap, true);
-			}
-			else if (swapState == SWAP_BACK) swapState = NO_SWAP;
 		}
 	}
 
@@ -301,6 +300,7 @@ void Board::findMatch(bool initBoardStage)
 				gems[i+2][j]->isMatched = true;
 			}
 			hasMatch = true;
+			return;
 		}
 	}
 
@@ -316,6 +316,7 @@ void Board::findMatch(bool initBoardStage)
 				gems[i][j+2]->isMatched = true;
 			}
 			hasMatch = true;
+			return;
 		}
 	}
 }
@@ -345,6 +346,8 @@ void Board::sweepMatches()
 			}
 		}
 	}
+
+	checkGameover();
 }
 
 void Board::swap(int x1, int y1, int x2, int y2, bool moveCursor)
@@ -364,4 +367,75 @@ void Board::swap(int x1, int y1, int x2, int y2, bool moveCursor)
 
 	if (swapState == NO_SWAP) swapState = SWAP_FIRST;
 	else if (swapState == SWAP_FIRST) swapState = SWAP_BACK;
+}
+
+void Board::checkGameover()
+{
+	gameover = true;
+
+	// Check matches of type
+	// X X Y
+	// Y Z X
+	// or
+	// X Y X
+	// Z X Z
+	for(int i = 0; i < 7; i++)
+	{
+		int occurences[6] = {};
+		for(int j = 0; j < 8; j++)
+		{
+			for(int k = 1; k <= 6; k++)
+			{
+				if (gems[i][j]->type == k || gems[i+1][j]->type == k)
+				{
+					occurences[k-1]++;
+					if(occurences[k-1] >= 3) gameover = false;
+				}
+				else occurences[k-1] = 0;
+			}
+		}
+	}
+
+	for(int j = 0; j < 7; j++)
+	{
+		int occurences[6] = {};
+		for(int i = 0; i < 8; i++)
+		{
+			for(int k = 1; k <= 6; k++)
+			{
+				if (gems[i][j]->type == k || gems[i][j+1]->type == k)
+				{
+					occurences[k-1]++;
+					if(occurences[k-1] >= 3) gameover = false;
+				}
+				else occurences[k-1] = 0;
+			}
+		}
+	}
+
+	// Check matches of type
+	// X X Y X
+	// or
+	// X Y X X
+	for(int i = 0; i < 5; i++)
+	for(int j = 0; j < 8; j++)
+	{
+		if (gems[i][j]->type == gems[i+3][j]->type &&
+			(gems[i][j]->type == gems[i+1][j]->type || 
+			 gems[i][j]->type == gems[i+2][j]->type))
+			 {
+				 gameover = false;
+			 }
+	}
+
+	for(int j = 0; j < 5; j++)
+	for(int i = 0; i < 8; i++)
+	{
+		if (gems[i][j]->type == gems[i][j+3]->type &&
+			(gems[i][j]->type == gems[i][j+1]->type || 
+			 gems[i][j]->type == gems[i][j+2]->type))
+			 {
+				 gameover = false;
+			 }
+	}
 }

@@ -18,10 +18,6 @@ public:
 private:
 	Score score;
 
-	// Wait between combos
-	bool shortWait = false;
-	int waitTick;
-
 	// Board generation
 	bool isSlotAvailable(int x, int y);
 	void genPartialMatch(int x, int y, int type);
@@ -31,7 +27,12 @@ private:
 	void findMatch(bool initBoardStage);
 	bool hasMatch = false;
 	void sweepMatches();
+
+	// Combos
 	int combo = -1;
+	// Wait between combos
+	bool shortWait = false;
+	int waitTick;
 
 	// Gem swapping
 	void swap(int x1, int y1, int x2, int y2, bool moveCursor);
@@ -54,6 +55,10 @@ private:
 
 	// Board animations
 	bool isAnimating = false;
+
+	// Game over
+	void checkGameover();
+	bool gameover = false;
 
 	Sprite *arrows;
 };
