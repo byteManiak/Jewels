@@ -15,6 +15,9 @@ public:
 
 	void genBoard();
 private:
+	bool shortWait = false;
+	int waitTick;
+
 	// Board generation
 	bool isSlotAvailable(int x, int y);
 	void genPartialMatch(int x, int y, int type);
@@ -24,6 +27,7 @@ private:
 	void findMatch(bool initBoardStage);
 	bool hasMatch = false;
 	void sweepMatches();
+	int combo = -1;
 
 	// Gem swapping
 	void swap(int x1, int y1, int x2, int y2, bool moveCursor);

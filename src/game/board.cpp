@@ -5,6 +5,9 @@
 
 Board::Board()
 {
+	for(int i = 0; i < 8; i++)
+		createSound("assets/combo"+std::to_string(i)+".wav", "combo"+std::to_string(i));
+
 	arrows = new Sprite("arrows", 9, 9, 4, 0);
 }
 
@@ -93,23 +96,39 @@ void Board::update()
 
 	if (!isAnimating)
 	{
-		if (isSelecting && swapState == NO_SWAP)
+		if (shortWait)
 		{
-			if (xCursor > 0) arrows->drawTile(BASEX+xCursor*16-7, BASEY+yCursor*16+4, 0);
-			if (xCursor < 7) arrows->drawTile(BASEX+xCursor*16+15, BASEY+yCursor*16+4, 1);
-			if (yCursor > 0) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16-7, 3);
-			if (yCursor < 7) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16+15, 2);
+			if (SDL_GetTicks() - waitTick > 900)
+			{
+				shortWait = false;
+			}
 		}
-
-		findMatch(false);
-		if (hasMatch) sweepMatches();
-
-		if (swapState == SWAP_FIRST)
+		else
 		{
-			if (hasMatch) swapState = NO_SWAP;
-			else swap(x1swap, y1swap, x2swap, y2swap, true);
+			if (isSelecting && swapState == NO_SWAP)
+			{
+				if (xCursor > 0) arrows->drawTile(BASEX+xCursor*16-7, BASEY+yCursor*16+4, 0);
+				if (xCursor < 7) arrows->drawTile(BASEX+xCursor*16+15, BASEY+yCursor*16+4, 1);
+				if (yCursor > 0) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16-7, 3);
+				if (yCursor < 7) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16+15, 2);
+			}
+
+			findMatch(false);
+			if (hasMatch)
+			{
+				combo++;
+				playSound("combo" + std::to_string(combo));
+				sweepMatches();
+			}
+			else combo = -1;
+
+			if (swapState == SWAP_FIRST)
+			{
+				if (hasMatch) swapState = NO_SWAP;
+				else swap(x1swap, y1swap, x2swap, y2swap, true);
+			}
+			else if (swapState == SWAP_BACK) swapState = NO_SWAP;
 		}
-		else if (swapState == SWAP_BACK) swapState = NO_SWAP;
 	}
 }
 
@@ -313,6 +332,8 @@ void Board::sweepMatches()
 					swap(i, k, i, k-1, false);
 				gems[i][0] = new Gem(rand()%6+1, i, 0, gemsMatched);
 				gemsMatched++;
+				shortWait = true;
+				waitTick = SDL_GetTicks();
 			}
 		}
 	}
