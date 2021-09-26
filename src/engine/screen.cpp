@@ -83,9 +83,9 @@ void drawRectangle(int x, int y, int w, int h, int color, bool fill)
 	if (fill) SDL_RenderFillRect(renderer, &r);
 	else
 	{
-		SDL_RenderDrawLine(renderer, x, y, x, y+h);
-		SDL_RenderDrawLine(renderer, x, y, x+w, y);
-		SDL_RenderDrawLine(renderer, x, y+h, x+w, y+h);
-		SDL_RenderDrawLine(renderer, x+w, y, x+w, y+h);
+		SDL_RenderDrawLine(renderer, x, y, x, y+h-1);
+		SDL_RenderDrawLine(renderer, x, y, x+w-1, y);
+		SDL_RenderDrawLine(renderer, x, y+h-1, x+w-1, y+h-1);
+		SDL_RenderDrawLine(renderer, x+w-1, y, x+w-1, y+h-1);
 	}
 }
