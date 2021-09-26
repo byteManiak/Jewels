@@ -300,7 +300,6 @@ void Board::findMatch(bool initBoardStage)
 				gems[i+2][j]->isMatched = true;
 			}
 			hasMatch = true;
-			return;
 		}
 	}
 
@@ -316,7 +315,6 @@ void Board::findMatch(bool initBoardStage)
 				gems[i][j+2]->isMatched = true;
 			}
 			hasMatch = true;
-			return;
 		}
 	}
 }
