@@ -5,6 +5,7 @@
 #include "game/common.h"
 #include "game/gem.h"
 #include "game/score.h"
+#include "game/bar.h"
 
 class Board
 {
@@ -17,6 +18,7 @@ public:
 	void genBoard();
 private:
 	Score score;
+	Bar bar;
 
 	// Board generation
 	bool isSlotAvailable(int x, int y);

@@ -26,3 +26,8 @@ void Score::draw()
 {
 	drawText(sz, SCOREX, SCOREY);
 }
+
+void Score::increaseLevel()
+{
+	level++;
+}

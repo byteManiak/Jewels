@@ -7,6 +7,7 @@ Board::Board()
 {
 	for(int i = 0; i < 8; i++)
 		createSound("assets/combo"+std::to_string(i)+".wav", "combo"+std::to_string(i));
+	createSound("assets/levelup.wav", "levelup");
 
 	arrows = new Sprite("arrows", 9, 9, 4, 0);
 }
@@ -108,7 +109,7 @@ void Board::update()
 			for(int j = 0; j < 8; j++)
 			if (gems[i][j]->isMatched)
 			{
-				drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 2, true);
+				drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 1, true);
 				gems[i][j]->draw(true);
 			}
 		}
@@ -140,6 +141,7 @@ void Board::update()
 	}
 
 	score.draw();
+	bar.draw();
 }
 
 enum Dir
@@ -349,6 +351,15 @@ void Board::sweepMatches()
 				waitTick = SDL_GetTicks();
 
 				score.addScore(combo+1);
+				bar.addProgress();
+
+				if (bar.startNewLevel)
+				{
+					bar.startNewLevel = false;
+					score.increaseLevel();
+					playSound("levelup");
+					setNextColorPalette();
+				}
 			}
 		}
 	}

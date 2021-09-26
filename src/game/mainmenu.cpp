@@ -19,7 +19,7 @@ public:
 		if (!isLooping)
 		{
 			x = -15 + (SDL_GetTicks() - startTick) / 20.f;
-			y = YCENTRE/3+1;
+			y = YCENTRE/3-9;
 			if (x >= XCENTRE-7)
 			{
 				x = XCENTRE-7;
@@ -30,7 +30,7 @@ public:
 		else
 		{
 			x = XCENTRE-7+sin((SDL_GetTicks() - startTick) / 600.f)*(3*XCENTRE/4.f);
-			y = YCENTRE-11-cos((SDL_GetTicks() - startTick) / 600.f)*(YCENTRE/2.f);
+			y = YCENTRE-21-cos((SDL_GetTicks() - startTick) / 600.f)*(YCENTRE/2.f);
 		}
 
 		sprite->draw(x, y);
@@ -61,12 +61,12 @@ bool MainMenu::update()
 	if (logoMoving)
 	{
 		logoY = -LOGO_SIZE_Y*2 + (SDL_GetTicks() - startTick) / 40.f;
-		if (logoY >= YCENTRE - LOGO_SIZE_Y - 8) logoMoving = false;
+		if (logoY >= YCENTRE - LOGO_SIZE_Y - 18) logoMoving = false;
 		if (isKeyPressed(SDL_SCANCODE_RETURN)) logoMoving = false;
 	}
 	else
 	{
-		logoY = YCENTRE - LOGO_SIZE_Y - 8;
+		logoY = YCENTRE - LOGO_SIZE_Y - 18;
 		if ((SDL_GetTicks() - startTick) > 620)
 		{
 			startTick = SDL_GetTicks();
@@ -81,6 +81,13 @@ bool MainMenu::update()
 			stopSound(soundChannel);
 			retVal = true;
 		}
+
+		drawText("a game by bytemaniak", 1, 1);
+
+		drawText("press enter to play", 5, 100);
+		drawText("controls:", 45, 116);
+		drawText("hold z to swap gems", 5, 124);
+		drawText("arrows to move", 25, 132);
 	}
 
 	drawTexture("logo", 31, logoY, LOGO_SIZE_X*2, LOGO_SIZE_Y*2, 0, 0, LOGO_SIZE_X, LOGO_SIZE_Y);
