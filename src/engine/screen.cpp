@@ -81,5 +81,11 @@ void drawRectangle(int x, int y, int w, int h, int color, bool fill)
 						   currentPalette->colors[color].b,
 						   0);
 	if (fill) SDL_RenderFillRect(renderer, &r);
-	else SDL_RenderDrawRect(renderer, &r);
+	else
+	{
+		SDL_RenderDrawLine(renderer, x, y, x, y+h);
+		SDL_RenderDrawLine(renderer, x, y, x+w, y);
+		SDL_RenderDrawLine(renderer, x, y+h, x+w, y+h);
+		SDL_RenderDrawLine(renderer, x+w, y, x+w, y+h);
+	}
 }

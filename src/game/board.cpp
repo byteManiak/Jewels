@@ -233,7 +233,7 @@ void Board::update()
 	if (gameover)
 	{
 		drawRectangle(0, 63, 160, 1, 1, true);
-		drawRectangle(0, 64, 160, 25, 3, true);
+		drawRectangle(0, 64, 160, 25, 2, true);
 		drawRectangle(0, 88, 160, 1, 1, true);
 		drawText("game over", 48, 67);
 		drawText("press z to restart", 10, 75);
