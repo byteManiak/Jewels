@@ -8,6 +8,7 @@ Bar::Bar()
 {
 	createTexture("assets/barholder.pcx", "barholder");
 	createTexture("assets/bar.pcx", "bar");
+	createTexture("assets/bardesc.pcx", "bardesc");
 }
 
 Bar::~Bar()
@@ -26,8 +27,6 @@ void Bar::addProgress()
 	}
 }
 
-#include <iostream>
-
 void Bar::draw()
 {
 	int t = 79-(SDL_GetTicks()/300)%80;
@@ -37,4 +36,12 @@ void Bar::draw()
 	drawTexture("bar", BARX+1, BARY+1,      20, 80-t, 0, t,    20, 80-t);
 	drawRectangle(BARX+1, BARY+1, 20, 80*p, 3, true); 
 	drawTexture("barholder", BARX, BARY, 22, 82);
+
+	drawTexture("bardesc", BARX-2, BARY+83, 26, 36);
+}
+
+void Bar::reset()
+{
+	maxgems = 60;
+	gemcount = 0;
 }

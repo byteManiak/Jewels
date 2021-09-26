@@ -64,3 +64,35 @@ bool isSoundPlaying(int channel)
 {
 	return Mix_Playing(channel) != 0;
 }
+
+static Mix_Music *music = NULL;
+
+void createMusic(std::string path)
+{
+	music = Mix_LoadMUS(path.c_str());
+	if (music == NULL)
+	{
+		std::cerr << "Could not load music file from \"" << path << "\"" << std::endl;
+	}
+}
+
+void deleteMusic()
+{
+	Mix_FreeMusic(music);
+}
+
+void playMusic()
+{
+	Mix_PlayMusic(music, -1);
+}
+
+void pauseMusic()
+{
+	Mix_PauseMusic();
+}
+
+void resumeMusic()
+{
+	Mix_RewindMusic();
+	Mix_ResumeMusic();
+}

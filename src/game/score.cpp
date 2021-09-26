@@ -2,12 +2,15 @@
 
 #include "engine/text.h"
 
-#define SCOREX 67
+#define SCOREX 100
 #define SCOREY 132
+#define LEVELX 6
+#define LEVELY 132
 
 Score::Score()
 {
-	sz = "0000000";
+	s = "0000000";
+	l = "001";
 }
 
 Score::~Score()
@@ -18,16 +21,28 @@ Score::~Score()
 void Score::addScore(int combo)
 {
 	score += combo * (level*5);
-	std::string s = std::to_string(score);
-	sz = std::string(7-s.length(),'0') + s;
+	std::string t = std::to_string(score);
+	s = std::string(7-t.length(),'0') + t;
 }
 
 void Score::draw()
 {
-	drawText(sz, SCOREX, SCOREY);
+	drawText("level", LEVELX, LEVELY);
+	drawText(l, LEVELX+48, LEVELY);
+	drawText(s, SCOREX, SCOREY);
 }
 
 void Score::increaseLevel()
 {
 	level++;
+	std::string t = std::to_string(level);
+	l = std::string(3-t.length(),'0') + t;
+}
+
+void Score::reset()
+{
+	level = 1;
+	score = 0;
+	s = "0000000";
+	l = "001";
 }

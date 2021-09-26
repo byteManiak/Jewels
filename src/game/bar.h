@@ -12,6 +12,7 @@ public:
 
 	void addProgress();
 	void draw();
+	void reset();
 
 	bool startNewLevel = false;
 private:

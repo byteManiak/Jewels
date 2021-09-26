@@ -3,11 +3,62 @@
 #include <iostream>
 #include <vector>
 
+class ProgressGem
+{
+public:
+	ProgressGem(int type, int x, int y)
+	{
+		this->x = x; this->y = y;
+		texture = "gem" + std::to_string(type);
+		startTick = SDL_GetTicks();
+	}
+
+	void draw()
+	{
+		float dx = abs(x-xdest)+1;
+		float dy = abs(y-ydest)+1;
+
+		if ((int)x < xdest)
+		{
+			x += dx*(SDL_GetTicks() - startTick)/2000.f;
+			if (x > xdest) x = xdest;
+		}
+		else if ((int)x > xdest)
+		{
+			x -= dx*(SDL_GetTicks() - startTick)/2000.f;
+			if (x < xdest) x = xdest;
+		}
+
+		if ((int)y < ydest)
+		{
+			y += dy*(SDL_GetTicks() - startTick)/2000.f;
+			if (y > ydest) y = ydest;
+		}
+		else if ((int)y > ydest)
+		{
+			y -= dy*(SDL_GetTicks() - startTick)/2000.f;
+			if (y < ydest) y = ydest;
+		}
+
+		if ((int)x == xdest && (int)y == ydest) reached = true;
+
+		drawTexture(texture, x, y, 15, 15, 0, 0, 15, 15);
+	}
+
+	bool reached = false;
+private:
+	int startTick;
+	int xdest = 8, ydest = 4;
+	int x, y;
+	std::string texture;
+};
+
 Board::Board()
 {
 	for(int i = 0; i < 8; i++)
 		createSound("assets/combo"+std::to_string(i)+".wav", "combo"+std::to_string(i));
 	createSound("assets/levelup.wav", "levelup");
+	createSound("assets/gameover.wav", "gameover");
 
 	arrows = new Sprite("arrows", 9, 9, 4, 0);
 }
@@ -22,52 +73,67 @@ Board::~Board()
 
 void Board::update()
 {
-	isSelecting = isKeyDown(SDL_SCANCODE_Z);
-
-	if (!isSelecting)
+	if (gameover)
 	{
-		if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
-		if (isKeyPressed(SDL_SCANCODE_RIGHT)) xCursor++;
-		if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
-		if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
-	}
-	else if (!isAnimating && !shortWait && swapState == NO_SWAP)
-	{
-		if (isKeyPressed(SDL_SCANCODE_LEFT))
+		pauseMusic();
+		if (isKeyPressed(SDL_SCANCODE_Z))
 		{
-			if (xCursor > 0)
-			{
-				swap(xCursor, yCursor, xCursor-1, yCursor, true);
-			}
-		}
-		else if (isKeyPressed(SDL_SCANCODE_RIGHT))
-		{
-			if (xCursor < 7)
-			{
-				swap(xCursor, yCursor, xCursor+1, yCursor, true);
-			}
-		}
-		else if (isKeyPressed(SDL_SCANCODE_UP))
-		{
-			if (yCursor > 0)
-			{
-				swap(xCursor, yCursor, xCursor, yCursor-1, true);
-			}
-		}
-		else if (isKeyPressed(SDL_SCANCODE_DOWN))
-		{
-			if (yCursor < 7)
-			{
-				swap(xCursor, yCursor, xCursor, yCursor+1, true);
-			}
+			score.reset();
+			bar.reset();
+			genBoard();
+			gameover = false;
+			resumeMusic();
 		}
 	}
+	else
+	{
+		isSelecting = isKeyDown(SDL_SCANCODE_Z);
 
-	if (xCursor < 0) xCursor = 0;
-	else if (xCursor > 7) xCursor = 7;
+		if (!isSelecting)
+		{
+			if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
+			if (isKeyPressed(SDL_SCANCODE_RIGHT)) xCursor++;
+			if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
+			if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
+		}
+		else if (!isAnimating && !shortWait && swapState == NO_SWAP)
+		{
+			if (isKeyPressed(SDL_SCANCODE_LEFT))
+			{
+				if (xCursor > 0)
+				{
+					swap(xCursor, yCursor, xCursor-1, yCursor, true);
+				}
+			}
+			else if (isKeyPressed(SDL_SCANCODE_RIGHT))
+			{
+				if (xCursor < 7)
+				{
+					swap(xCursor, yCursor, xCursor+1, yCursor, true);
+				}
+			}
+			else if (isKeyPressed(SDL_SCANCODE_UP))
+			{
+				if (yCursor > 0)
+				{
+					swap(xCursor, yCursor, xCursor, yCursor-1, true);
+				}
+			}
+			else if (isKeyPressed(SDL_SCANCODE_DOWN))
+			{
+				if (yCursor < 7)
+				{
+					swap(xCursor, yCursor, xCursor, yCursor+1, true);
+				}
+			}
+		}
 
-	if (yCursor < 0) yCursor = 0;
-	else if (yCursor > 7) yCursor = 7;
+		if (xCursor < 0) xCursor = 0;
+		else if (xCursor > 7) xCursor = 7;
+
+		if (yCursor < 0) yCursor = 0;
+		else if (yCursor > 7) yCursor = 7;
+	}
 
 	isAnimating = false;
 
@@ -142,6 +208,35 @@ void Board::update()
 
 	score.draw();
 	bar.draw();
+
+	for(auto it = progressGems.begin(); it != progressGems.end();)
+	{
+		it->draw();
+		if (it->reached)
+		{
+			bar.addProgress();
+
+			if (bar.startNewLevel)
+			{
+				bar.startNewLevel = false;
+				score.increaseLevel();
+				playSound("levelup");
+				setNextColorPalette();
+			}
+
+			it = progressGems.erase(it);
+		}
+		else ++it;
+	}
+
+	if (gameover)
+	{
+		drawRectangle(0, 63, 160, 1, 1, true);
+		drawRectangle(0, 64, 160, 25, 3, true);
+		drawRectangle(0, 88, 160, 1, 1, true);
+		drawText("game over", 48, 67);
+		drawText("press z to restart", 10, 75);
+	}
 }
 
 enum Dir
@@ -338,6 +433,8 @@ void Board::sweepMatches()
 		{
 			if (gems[i][j]->isMatched)
 			{
+				progressGems.push_back(ProgressGem(gems[i][j]->type,BASEX+i*16,BASEY+j*16));
+
 				delete(gems[i][j]);
 				gems[i][j] = nullptr;
 
@@ -351,20 +448,12 @@ void Board::sweepMatches()
 				waitTick = SDL_GetTicks();
 
 				score.addScore(combo+1);
-				bar.addProgress();
-
-				if (bar.startNewLevel)
-				{
-					bar.startNewLevel = false;
-					score.increaseLevel();
-					playSound("levelup");
-					setNextColorPalette();
-				}
 			}
 		}
 	}
 
 	checkGameover();
+	if (gameover) playSound("gameover");
 }
 
 void Board::swap(int x1, int y1, int x2, int y2, bool moveCursor)

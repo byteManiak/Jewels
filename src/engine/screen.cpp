@@ -33,7 +33,7 @@ void initScreen(const char *title, int xRes, int yRes, bool intScaling)
 									 SDL_TEXTUREACCESS_TARGET,
 									 xRes, yRes);
 
-	addColorPalette("Default", 0x060601, 0x0b3e08, 0x489a0d, 0xdaf222);
+	addColorPalette("Default", 0x050500, 0x033800, 0x3e9500, 0xd4f000);
 	setColorPalette("Default");
 }
 

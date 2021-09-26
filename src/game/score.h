@@ -13,9 +13,10 @@ public:
 	void addScore(int combo);
 	void draw();
 	void increaseLevel();
+	void reset();
 
 private:
 	int level = 1;
 	int score = 0;
-	std::string sz;
+	std::string s, l;
 };

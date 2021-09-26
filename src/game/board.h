@@ -7,6 +7,10 @@
 #include "game/score.h"
 #include "game/bar.h"
 
+#include <vector>
+
+class ProgressGem;
+
 class Board
 {
 public:
@@ -63,4 +67,6 @@ private:
 	bool gameover = false;
 
 	Sprite *arrows;
+
+	std::vector<ProgressGem> progressGems;
 };
