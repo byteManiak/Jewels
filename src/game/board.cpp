@@ -103,6 +103,14 @@ void Board::update()
 			{
 				shortWait = false;
 			}
+
+			for(int i = 0; i < 8; i++)
+			for(int j = 0; j < 8; j++)
+			if (gems[i][j]->isMatched)
+			{
+				drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 2, true);
+				gems[i][j]->draw(true);
+			}
 		}
 		else
 		{
