@@ -14,11 +14,11 @@ Game::Game()
 
 	loadFont();
 
-	addColorPalette("Gold", 0x210b1b, 0x4d222c, 0x9d654c, 0xcfab51);
+	addColorPalette("Gold", 0x210b1b, 0x3d223c, 0x8d655c, 0xbfab61);
 	addColorPalette("Amber", 0x0d0405, 0x5e1210, 0xd35600, 0xfed018);
-	addColorPalette("Vboy", 0x000000, 0x550000, 0xa40000, 0xef0000);
+	addColorPalette("Vboy", 0x000000, 0x552222, 0xa44444, 0xff7777);
 	addColorPalette("Nymph", 0x2c2137, 0x446176, 0x3fac95, 0xa1ef8c);
-	addColorPalette("Blue", 0x141433, 0x1f1466, 0x4a24b3, 0x8f66cc);
+	addColorPalette("Blue", 0x141444, 0x1f1488, 0x4a24cc, 0x8f66ff);
 
 	createTexture("assets/jewel1.pcx", "gem1");
 	createTexture("assets/jewel2.pcx", "gem2");

@@ -74,7 +74,7 @@ void lerp(float &c, float d)
 {
 	// Scale the lerp speed with the distance for a smooth animation
 	float distance = abs(c-d);
-	float lerpSpeed = distance * (SDL_GetTicks() - startTick)/3000.f;
+	float lerpSpeed = distance * (SDL_GetTicks() - startTick)/1500.f;
 
 	// Move radial menu towards the new destination
 	if (c > d) c -= lerpSpeed;
