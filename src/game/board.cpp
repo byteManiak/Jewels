@@ -30,7 +30,7 @@ void Board::update()
 		if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
 		if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
 	}
-	else if (!isAnimating && !shortWait)
+	else if (!isAnimating && !shortWait && swapState == NO_SWAP)
 	{
 		if (isKeyPressed(SDL_SCANCODE_LEFT))
 		{
