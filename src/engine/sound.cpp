@@ -35,7 +35,7 @@ void createSound(std::string path, std::string name)
 void deleteSound(std::string name)
 {
 	if (sounds.find(name) == sounds.end())
-	{	
+	{
 		std::cout << "Sound \"" << name << "\" was not found in memory" << std::endl;
 		return;
 	}
@@ -83,6 +83,7 @@ void deleteMusic()
 
 void playMusic()
 {
+	Mix_VolumeMusic(48);
 	Mix_PlayMusic(music, -1);
 }
 

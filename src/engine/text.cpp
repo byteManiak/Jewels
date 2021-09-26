@@ -18,7 +18,7 @@ void drawText(std::string text, int x, int y)
 {
 	SDL_Rect r = {x, y, text.length()*fontW, fontH};
 
-	SDL_Surface *s = TTF_RenderText_Solid(font, text.c_str(), currentPalette->colors[1]);
+	SDL_Surface *s = TTF_RenderText_Solid(font, text.c_str(), currentPalette->colors[3]);
 	SDL_Texture *t = SDL_CreateTextureFromSurface(renderer, s);
 	SDL_RenderCopy(renderer, t, NULL, &r);
 	SDL_DestroyTexture(t);

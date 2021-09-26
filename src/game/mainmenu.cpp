@@ -3,6 +3,7 @@
 #include "game/common.h"
 
 #include <iostream>
+#include <cmath>
 
 class SpinnyGem
 {

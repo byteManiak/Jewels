@@ -140,9 +140,11 @@ void Board::update()
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
 	{
+		drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 1);
+
 		if (i == xCursor && j == yCursor)
 		{
-			drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 2, true);
+			drawRectangle(BASEX+i*16+1, BASEY+j*16+1, 15, 15, 1, true);
 			if(gems[i][j])
 			{
 				gems[i][j]->draw(true);
@@ -151,7 +153,6 @@ void Board::update()
 		}
 		else
 		{
-			drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 2);
 			if (gems[i][j])
 			{
 				gems[i][j]->draw();
@@ -175,7 +176,7 @@ void Board::update()
 			for(int j = 0; j < 8; j++)
 			if (gems[i][j]->isMatched)
 			{
-				drawRectangle(BASEX+i*16, BASEY+j*16, 17, 17, 1, true);
+				drawRectangle(BASEX+i*16+1, BASEY+j*16+1, 15, 15, 3, true);
 				gems[i][j]->draw(true);
 			}
 		}
@@ -443,7 +444,7 @@ void Board::sweepMatches()
 
 				gems[i][0] = new Gem(rand()%6+1, i, 0, gemsMatched);
 				gemsMatched++;
-			
+
 				shortWait = true;
 				waitTick = SDL_GetTicks();
 
@@ -527,7 +528,7 @@ void Board::checkGameover()
 	for(int j = 0; j < 8; j++)
 	{
 		if (gems[i][j]->type == gems[i+3][j]->type &&
-			(gems[i][j]->type == gems[i+1][j]->type || 
+			(gems[i][j]->type == gems[i+1][j]->type ||
 			 gems[i][j]->type == gems[i+2][j]->type))
 			 {
 				 gameover = false;
@@ -538,7 +539,7 @@ void Board::checkGameover()
 	for(int i = 0; i < 8; i++)
 	{
 		if (gems[i][j]->type == gems[i][j+3]->type &&
-			(gems[i][j]->type == gems[i][j+1]->type || 
+			(gems[i][j]->type == gems[i][j+1]->type ||
 			 gems[i][j]->type == gems[i][j+2]->type))
 			 {
 				 gameover = false;

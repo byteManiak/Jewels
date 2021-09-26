@@ -2,6 +2,8 @@
 
 #include "game/common.h"
 
+#include <ctime>
+
 Sprite *test;
 
 Game::Game()

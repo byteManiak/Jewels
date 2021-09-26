@@ -15,7 +15,7 @@ void initScreen(const char *title, int xRes, int yRes, bool intScaling)
 	// Create game window with triple-size pixels
 	// Engine assumes the resolution will be low enough
 	// to fit this tripled resolution on screen
-	window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 
+	window = SDL_CreateWindow(title, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 							  xRes*3, yRes*3, SDL_WINDOW_RESIZABLE);
 
 	// Create game renderer
@@ -34,7 +34,7 @@ void initScreen(const char *title, int xRes, int yRes, bool intScaling)
 									 xRes, yRes);
 
 	addColorPalette("Default", 0x050500, 0x033800, 0x3e9500, 0xd4f000);
-	setColorPalette("Default");
+	setColorPalette("Default", true);
 }
 
 void deinitScreen()
@@ -46,6 +46,8 @@ void deinitScreen()
 
 void beginDraw()
 {
+	updatePalette();
+
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	// Clear the screen contents
 	SDL_RenderClear(renderer);
@@ -53,9 +55,9 @@ void beginDraw()
 	// Draw to the render target that has the screen resolution we set
 	SDL_SetRenderTarget(renderer, renderTarget);
 	SDL_SetRenderDrawColor(renderer,
-						   currentPalette->colors[3].r,
-						   currentPalette->colors[3].g,
-						   currentPalette->colors[3].b,
+						   currentPalette->colors[2].r,
+						   currentPalette->colors[2].g,
+						   currentPalette->colors[2].b,
 						   0);
 	// Clear the render target contents
 	SDL_RenderClear(renderer);

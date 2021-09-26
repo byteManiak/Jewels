@@ -34,7 +34,7 @@ void Bar::draw()
 
 	drawTexture("bar", BARX+1, BARY+1+80-t, 20, t,    0, 0, 20, t);
 	drawTexture("bar", BARX+1, BARY+1,      20, 80-t, 0, t,    20, 80-t);
-	drawRectangle(BARX+1, BARY+1, 20, 80*p, 3, true); 
+	drawRectangle(BARX+1, BARY+1, 20, 80*p, 2, true);
 	drawTexture("barholder", BARX, BARY, 22, 82);
 
 	drawTexture("bardesc", BARX-2, BARY+83, 26, 36);
