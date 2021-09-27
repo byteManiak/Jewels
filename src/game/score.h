@@ -13,6 +13,7 @@ public:
 	void addScore(int combo);
 	void draw();
 	void increaseLevel();
+	void setLevel();
 	void reset();
 
 	int level = 1;

@@ -32,11 +32,16 @@ void Score::draw()
 	drawText(s, SCOREX, SCOREY);
 }
 
+void Score::setLevel()
+{
+	std::string t = std::to_string(level);
+	l = std::string(3-t.length(),'0') + t;
+}
+
 void Score::increaseLevel()
 {
 	level++;
-	std::string t = std::to_string(level);
-	l = std::string(3-t.length(),'0') + t;
+	setLevel();
 }
 
 void Score::reset()

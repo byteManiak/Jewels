@@ -391,6 +391,7 @@ bool Board::tryLoadGame()
 	file.close();
 
 	score.addScore(0);
+	score.setLevel();
 
 	for(int i = 0; i < (score.level-1)%6; i++) setNextColorPalette();
 
