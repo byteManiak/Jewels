@@ -15,8 +15,8 @@ public:
 	void increaseLevel();
 	void reset();
 
-private:
 	int level = 1;
 	int score = 0;
+private:
 	std::string s, l;
 };

@@ -15,7 +15,8 @@ public:
 	void reset();
 
 	bool startNewLevel = false;
-private:
+
 	int maxgems = 60;
 	int gemcount = 0;
+private:
 };

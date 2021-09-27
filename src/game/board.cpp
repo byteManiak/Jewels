@@ -1,7 +1,85 @@
 #include "game/board.h"
 
-#include <iostream>
-#include <vector>
+#include <fstream>
+
+enum PauseReturn
+{
+	NONE,
+	NEWGAME,
+	QUIT
+};
+
+#define PAUSEY 42
+
+class PauseMenu
+{
+public:
+	PauseReturn update()
+	{
+		if (isKeyPressed(SDL_SCANCODE_DOWN)) menuCursor++;
+		if (isKeyPressed(SDL_SCANCODE_UP)) menuCursor--;
+		if (menuCursor < 0) menuCursor = 0;
+		else if (menuCursor > 3) menuCursor = 3;
+
+		switch(menuCursor)
+		{
+			case 0:
+				if (isKeyPressed(SDL_SCANCODE_Z))
+				{
+					return NEWGAME;
+				}
+				break;
+
+			case 1:
+			{
+				if (isKeyPressed(SDL_SCANCODE_Z))
+				{
+					soundMuted = !soundMuted;
+					muteSounds(soundMuted);
+				}
+				break;
+			}
+			case 2:
+			{
+				if (isKeyPressed(SDL_SCANCODE_Z))
+				{
+					musicMuted = !musicMuted;
+					muteMusic(musicMuted);
+				}
+				break;
+			}
+			case 3:
+				if (isKeyPressed(SDL_SCANCODE_Z))
+				{
+					return QUIT;
+				}
+		}
+
+		drawRectangle(0, PAUSEY-2, 160, 1, 1, true);
+		drawRectangle(0, PAUSEY-1, 160, 49, 2, true);
+		drawRectangle(0, PAUSEY+47, 160, 1, 1, true);
+		drawText("pause", XCENTRE-20, PAUSEY);
+
+		drawText("new game", XCENTRE-32, PAUSEY+8);
+
+		drawText("sounds", XCENTRE-24, PAUSEY+16);
+		if (!soundMuted) drawText("x", XCENTRE+32, PAUSEY+16);
+		drawText("music", XCENTRE-20, PAUSEY+24);
+
+		if (!musicMuted) drawText("x", XCENTRE+24, PAUSEY+24);
+
+		drawText("save and quit", XCENTRE-48, PAUSEY+32);
+
+		drawText("-", 24, PAUSEY+(menuCursor+1)*8);
+
+		return NONE;
+	}
+
+private:
+	int menuCursor = 0;
+	bool soundMuted = false;
+	bool musicMuted = false;
+};
 
 class ProgressGem
 {
@@ -61,6 +139,7 @@ Board::Board()
 	createSound("assets/gameover.wav", "gameover");
 
 	arrows = new Sprite("arrows", 9, 9, 4, 0);
+	pauseMenu = new PauseMenu();
 }
 
 Board::~Board()
@@ -71,68 +150,74 @@ Board::~Board()
 		delete gems[i][j];
 }
 
-void Board::update()
+bool Board::update()
 {
 	if (gameover)
 	{
 		pauseMusic();
 		if (isKeyPressed(SDL_SCANCODE_Z))
 		{
-			score.reset();
-			bar.reset();
-			genBoard();
-			gameover = false;
+			newGame();
 			resumeMusic();
 		}
 	}
+	else if (isPaused)
+	{
+		if (isKeyPressed(SDL_SCANCODE_RETURN)) isPaused = false;
+	}
 	else
 	{
-		isSelecting = isKeyDown(SDL_SCANCODE_Z);
+		if (isKeyPressed(SDL_SCANCODE_RETURN)) isPaused = true;
 
-		if (!isSelecting)
+		else
 		{
-			if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
-			if (isKeyPressed(SDL_SCANCODE_RIGHT)) xCursor++;
-			if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
-			if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
-		}
-		else if (!isAnimating && !shortWait && swapState == NO_SWAP)
-		{
-			if (isKeyPressed(SDL_SCANCODE_LEFT))
-			{
-				if (xCursor > 0)
-				{
-					swap(xCursor, yCursor, xCursor-1, yCursor, true);
-				}
-			}
-			else if (isKeyPressed(SDL_SCANCODE_RIGHT))
-			{
-				if (xCursor < 7)
-				{
-					swap(xCursor, yCursor, xCursor+1, yCursor, true);
-				}
-			}
-			else if (isKeyPressed(SDL_SCANCODE_UP))
-			{
-				if (yCursor > 0)
-				{
-					swap(xCursor, yCursor, xCursor, yCursor-1, true);
-				}
-			}
-			else if (isKeyPressed(SDL_SCANCODE_DOWN))
-			{
-				if (yCursor < 7)
-				{
-					swap(xCursor, yCursor, xCursor, yCursor+1, true);
-				}
-			}
-		}
+			isSelecting = isKeyDown(SDL_SCANCODE_Z);
 
-		if (xCursor < 0) xCursor = 0;
-		else if (xCursor > 7) xCursor = 7;
+			if (!isSelecting)
+			{
+				if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
+				if (isKeyPressed(SDL_SCANCODE_RIGHT)) xCursor++;
+				if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
+				if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
+			}
+			else if (!isAnimating && !shortWait && swapState == NO_SWAP)
+			{
+				if (isKeyPressed(SDL_SCANCODE_LEFT))
+				{
+					if (xCursor > 0)
+					{
+						swap(xCursor, yCursor, xCursor-1, yCursor, true);
+					}
+				}
+				else if (isKeyPressed(SDL_SCANCODE_RIGHT))
+				{
+					if (xCursor < 7)
+					{
+						swap(xCursor, yCursor, xCursor+1, yCursor, true);
+					}
+				}
+				else if (isKeyPressed(SDL_SCANCODE_UP))
+				{
+					if (yCursor > 0)
+					{
+						swap(xCursor, yCursor, xCursor, yCursor-1, true);
+					}
+				}
+				else if (isKeyPressed(SDL_SCANCODE_DOWN))
+				{
+					if (yCursor < 7)
+					{
+						swap(xCursor, yCursor, xCursor, yCursor+1, true);
+					}
+				}
+			}
 
-		if (yCursor < 0) yCursor = 0;
-		else if (yCursor > 7) yCursor = 7;
+			if (xCursor < 0) xCursor = 0;
+			else if (xCursor > 7) xCursor = 7;
+
+			if (yCursor < 0) yCursor = 0;
+			else if (yCursor > 7) yCursor = 7;
+		}
 	}
 
 	isAnimating = false;
@@ -238,6 +323,81 @@ void Board::update()
 		drawText("game over", 48, 67);
 		drawText("press z to restart", 10, 75);
 	}
+
+	if (isPaused)
+	{
+		PauseReturn ret = pauseMenu->update();
+		if (ret == NEWGAME)
+		{
+			newGame();
+			isPaused = false;
+		}
+		else if (ret == QUIT)
+		{
+			saveGame();
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void Board::newGame()
+{
+	genBoard();
+	score.reset();
+	bar.reset();
+	gameover = false;
+}
+
+void Board::saveGame()
+{
+	std::ofstream file;
+	file.open(".savegame", std::ios::binary);
+	file.write((char*)&score.level, sizeof(int));
+	file.write((char*)&score.score, sizeof(int));
+	file.write((char*)&bar.gemcount, sizeof(int));
+	file.write((char*)&bar.maxgems, sizeof(int));
+	for(int i = 0; i < 8; i++)
+	for(int j = 0; j < 8; j++)
+		file.write((char*)&gems[i][j]->type, sizeof(int));
+	file.close();
+}
+
+void Board::loadGame()
+{
+	if (!tryLoadGame()) newGame();
+}
+
+bool Board::tryLoadGame()
+{
+	std::ifstream file;
+	file.open(".savegame", std::ios::binary);
+	if (!file.good()) return false;
+
+	file.read((char*)&score.level, sizeof(int));
+	file.read((char*)&score.score, sizeof(int));
+	file.read((char*)&bar.gemcount, sizeof(int));
+	file.read((char*)&bar.maxgems, sizeof(int));
+
+	for(int i = 0; i < 8; i++)
+	for(int j = 0; j < 8; j++)
+	{
+		int type;
+		file.read((char*)&type, sizeof(int));
+		gems[i][j] = new Gem(type, i, j);
+	}
+
+	file.close();
+
+	score.addScore(0);
+
+	for(int i = 0; i < (score.level-1)%6; i++) setNextColorPalette();
+
+	findMatch(false);
+	sweepMatches();
+
+	return true;
 }
 
 enum Dir

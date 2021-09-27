@@ -9,6 +9,7 @@
 
 #include <vector>
 
+class PauseMenu;
 class ProgressGem;
 
 class Board
@@ -17,9 +18,11 @@ public:
 	Board();
 	~Board();
 
-	void update();
+	bool update();
 
 	void genBoard();
+
+	void loadGame();
 private:
 	Score score;
 	Bar bar;
@@ -39,6 +42,11 @@ private:
 	// Wait between combos
 	bool shortWait = false;
 	int waitTick;
+
+	// Game state
+	void newGame();
+	void saveGame();
+	bool tryLoadGame();
 
 	// Gem swapping
 	void swap(int x1, int y1, int x2, int y2, bool moveCursor);
@@ -69,4 +77,7 @@ private:
 	Sprite *arrows;
 
 	std::vector<ProgressGem> progressGems;
+
+	PauseMenu *pauseMenu;
+	bool isPaused = false;
 };

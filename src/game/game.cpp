@@ -43,8 +43,6 @@ bool Game::update()
 {
 	updateEvents();
 
-	if (isKeyPressed(SDL_SCANCODE_ESCAPE)) return false;
-
 	beginDraw();
 
 	if (inMenu)
@@ -52,13 +50,13 @@ bool Game::update()
 		if (menu->update())
 		{
 			inMenu = false;
-			board->genBoard();
+			board->loadGame();
 			playMusic();
 		}
 	}
 	else
 	{
-		board->update();
+		if (board->update()) return false;
 	}
 
 	endDraw();

@@ -97,3 +97,15 @@ void resumeMusic()
 	Mix_RewindMusic();
 	Mix_ResumeMusic();
 }
+
+void muteSounds(bool mute)
+{
+	if (mute) Mix_Volume(-1, 0);
+	else Mix_Volume(-1, 128);
+}
+
+void muteMusic(bool mute)
+{
+	if (mute) Mix_VolumeMusic(0);
+	else Mix_VolumeMusic(48);
+}
