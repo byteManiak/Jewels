@@ -8,6 +8,8 @@ Sprite *test;
 
 Game::Game()
 {
+	initInput();
+
 	initSound();
 
 	initScreen("Jewels!", XRES, YRES);

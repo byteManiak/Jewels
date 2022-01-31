@@ -62,6 +62,8 @@ private:
 	int x1swap, y1swap, x2swap, y2swap;
 
 	// Player controls
+	int mouseX, mouseY;
+	bool isMouseAtCoords(int x, int y);
 	bool isSelecting = false;
 	int xCursor = 4, yCursor = 4;
 

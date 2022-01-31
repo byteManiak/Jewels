@@ -21,38 +21,25 @@ public:
 		if (menuCursor < 0) menuCursor = 0;
 		else if (menuCursor > 3) menuCursor = 3;
 
-		switch(menuCursor)
+		if (isKeyPressed(SDL_SCANCODE_RETURN))
 		{
-			case 0:
-				if (isKeyPressed(SDL_SCANCODE_Z))
-				{
-					return NEWGAME;
-				}
-				break;
-
-			case 1:
+			switch(menuCursor)
 			{
-				if (isKeyPressed(SDL_SCANCODE_Z))
+				case 0: return NEWGAME;
+				case 1:
 				{
 					soundMuted = !soundMuted;
 					muteSounds(soundMuted);
+					break;
 				}
-				break;
-			}
-			case 2:
-			{
-				if (isKeyPressed(SDL_SCANCODE_Z))
+				case 2:
 				{
 					musicMuted = !musicMuted;
 					muteMusic(musicMuted);
+					break;
 				}
-				break;
+				case 3: return QUIT;
 			}
-			case 3:
-				if (isKeyPressed(SDL_SCANCODE_Z))
-				{
-					return QUIT;
-				}
 		}
 
 		drawRectangle(0, PAUSEY-2, 160, 1, 1, true);
@@ -140,6 +127,8 @@ Board::Board()
 
 	arrows = new Sprite("arrows", 9, 9, 4, 0);
 	pauseMenu = new PauseMenu();
+
+	registerToSDLEvent(SDL_MOUSEMOTION, mouseEvent);
 }
 
 Board::~Board()
@@ -152,10 +141,14 @@ Board::~Board()
 
 bool Board::update()
 {
+	std::pair<int,int> mouseCoords = getMouseCoords();
+	mouseX = mouseCoords.first;
+	mouseY = mouseCoords.second;
+
 	if (gameover)
 	{
 		pauseMusic();
-		if (isKeyPressed(SDL_SCANCODE_Z))
+		if (isKeyPressed(SDL_SCANCODE_RETURN))
 		{
 			newGame();
 			resumeMusic();
@@ -163,52 +156,38 @@ bool Board::update()
 	}
 	else if (isPaused)
 	{
-		if (isKeyPressed(SDL_SCANCODE_RETURN)) isPaused = false;
+		if (isKeyPressed(SDL_SCANCODE_ESCAPE)) isPaused = false;
 	}
 	else
 	{
-		if (isKeyPressed(SDL_SCANCODE_RETURN)) isPaused = true;
+		if (isKeyPressed(SDL_SCANCODE_ESCAPE)) isPaused = true;
 
 		else
 		{
-			isSelecting = isKeyDown(SDL_SCANCODE_Z);
+			isSelecting = isInBounds(mouseX, mouseY, BASEX, BASEY, BASEX+BWIDTH, BASEY+BWIDTH) && isMouseButtonPressed(LEFT_CLICK);
 
 			if (!isSelecting)
 			{
-				if (isKeyPressed(SDL_SCANCODE_LEFT)) xCursor--;
-				if (isKeyPressed(SDL_SCANCODE_RIGHT)) xCursor++;
-				if (isKeyPressed(SDL_SCANCODE_UP)) yCursor--;
-				if (isKeyPressed(SDL_SCANCODE_DOWN)) yCursor++;
+				xCursor = (mouseX-BASEX)/16;
+				yCursor = (mouseY-BASEY)/16;
 			}
 			else if (!isAnimating && !shortWait && swapState == NO_SWAP)
 			{
-				if (isKeyPressed(SDL_SCANCODE_LEFT))
+				if (isMouseAtCoords(xCursor-1, yCursor))
 				{
-					if (xCursor > 0)
-					{
-						swap(xCursor, yCursor, xCursor-1, yCursor, true);
-					}
+					if (xCursor > 0) swap(xCursor, yCursor, xCursor-1, yCursor, true);
 				}
-				else if (isKeyPressed(SDL_SCANCODE_RIGHT))
+				else if (isMouseAtCoords(xCursor+1, yCursor))
 				{
-					if (xCursor < 7)
-					{
-						swap(xCursor, yCursor, xCursor+1, yCursor, true);
-					}
+					if (xCursor < 7) swap(xCursor, yCursor, xCursor+1, yCursor, true);
 				}
-				else if (isKeyPressed(SDL_SCANCODE_UP))
+				else if (isMouseAtCoords(xCursor, yCursor-1))
 				{
-					if (yCursor > 0)
-					{
-						swap(xCursor, yCursor, xCursor, yCursor-1, true);
-					}
+					if (yCursor > 0) swap(xCursor, yCursor, xCursor, yCursor-1, true);
 				}
-				else if (isKeyPressed(SDL_SCANCODE_DOWN))
+				else if (isMouseAtCoords(xCursor, yCursor+1))
 				{
-					if (yCursor < 7)
-					{
-						swap(xCursor, yCursor, xCursor, yCursor+1, true);
-					}
+					if (yCursor < 7) swap(xCursor, yCursor, xCursor, yCursor+1, true);
 				}
 			}
 
@@ -285,7 +264,7 @@ bool Board::update()
 			if (hasMatch)
 			{
 				combo++;
-				playSound("combo" + std::to_string(combo));
+				playSound("combo" + std::to_string(combo > 7 ? 7 : combo));
 				sweepMatches();
 			}
 			else combo = -1;
@@ -321,7 +300,7 @@ bool Board::update()
 		drawRectangle(0, 64, 160, 25, 2, true);
 		drawRectangle(0, 88, 160, 1, 1, true);
 		drawText("game over", 48, 67);
-		drawText("press z to restart", 10, 75);
+		drawText("press enter to reset", 1, 75);
 	}
 
 	if (isPaused)
@@ -706,4 +685,9 @@ void Board::checkGameover()
 				 gameover = false;
 			 }
 	}
+}
+
+bool Board::isMouseAtCoords(int x, int y)
+{
+	return isInBounds(mouseX, mouseY, BASEX+x*16, BASEY+y*16, BASEX+(x+1)*16, BASEY+(y+1)*16);
 }

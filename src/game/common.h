@@ -9,3 +9,4 @@
 // Board
 #define BASEX 30
 #define BASEY 1
+#define BWIDTH 16*8
