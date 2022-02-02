@@ -16,14 +16,14 @@ void windowEvent(SDL_Event ev)
 Game::Game()
 {
 	initInput();
-
 	initSound();
-
 	initScreen("Jewels!", XRES, YRES);
 
-	registerToSDLEvent(SDL_WINDOWEVENT, windowEvent);
+	initTTF();
+	createFont("assets/font.ttf", 8, "gbfont");
+	setFont("gbfont");
 
-	loadFont();
+	registerToSDLEvent(SDL_WINDOWEVENT, windowEvent);
 
 	addColorPalette("Gold", 0x210b1b, 0x3d223c, 0x8d655c, 0xbfab61);
 	addColorPalette("Amber", 0x0d0405, 0x5e1210, 0xd35600, 0xfed018);
