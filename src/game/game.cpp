@@ -6,6 +6,13 @@
 
 Sprite *test;
 
+bool isWindowClosed = false;
+
+void windowEvent(SDL_Event ev)
+{
+	if (ev.window.event == SDL_WINDOWEVENT_CLOSE) isWindowClosed = true;
+}
+
 Game::Game()
 {
 	initInput();
@@ -13,6 +20,8 @@ Game::Game()
 	initSound();
 
 	initScreen("Jewels!", XRES, YRES);
+
+	registerToSDLEvent(SDL_WINDOWEVENT, windowEvent);
 
 	loadFont();
 
@@ -43,6 +52,8 @@ Game::Game()
 
 bool Game::update()
 {
+	if (isWindowClosed) return false;
+
 	updateEvents();
 
 	beginDraw();
