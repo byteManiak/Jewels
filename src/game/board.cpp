@@ -127,8 +127,6 @@ Board::Board()
 
 	arrows = new Sprite("arrows", 9, 9, 4, 0);
 	pauseMenu = new PauseMenu();
-
-	registerToSDLEvent(SDL_MOUSEMOTION, mouseEvent);
 }
 
 Board::~Board()
