@@ -206,7 +206,7 @@ bool Board::update()
 
 		if (i == xCursor && j == yCursor)
 		{
-			drawRectangle(BASEX+i*16+1, BASEY+j*16+1, 15, 15, 1, true);
+			drawRectangle(BASEX+i*16+1, BASEY+j*16+1, 15, 15, isSelecting ? 3 : 1, true);
 			if(gems[i][j])
 			{
 				gems[i][j]->draw(true);
@@ -244,14 +244,6 @@ bool Board::update()
 		}
 		else
 		{
-			if (isSelecting && swapState == NO_SWAP)
-			{
-				if (xCursor > 0) arrows->drawTile(BASEX+xCursor*16-7, BASEY+yCursor*16+4, 0);
-				if (xCursor < 7) arrows->drawTile(BASEX+xCursor*16+15, BASEY+yCursor*16+4, 1);
-				if (yCursor > 0) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16-7, 3);
-				if (yCursor < 7) arrows->drawTile(BASEX+xCursor*16+4, BASEY+yCursor*16+15, 2);
-			}
-
 			if (swapState == SWAP_FIRST)
 			{
 				if (hasMatch) swapState = NO_SWAP;
