@@ -15,3 +15,8 @@ void registerToSDLEvent(SDL_EventType eventType, std::function<void(SDL_Event)> 
  * @brief Processes all SDL events through SDL_PollEvent and SDL_PumpEvents.
  */
 void processSDLEvents();
+
+/**
+ * @brief Process SDL events.
+ */
+void updateEvents();

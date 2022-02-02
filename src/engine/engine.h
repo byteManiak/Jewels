@@ -9,5 +9,3 @@
 #include "engine/text.h"
 #include "engine/event.h"
 #include "engine/2d_util.h"
-
-void updateEvents();

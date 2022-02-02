@@ -1,4 +1,5 @@
 #include "engine/event.h"
+#include "engine/input.h"
 
 #include <unordered_map>
 #include <vector>
@@ -28,4 +29,10 @@ void processSDLEvents()
             for(auto &i : eventRegistry[(SDL_EventType)ev.type]) i(ev);
         }
     }
+}
+
+void updateEvents()
+{
+	updateKeyboard();
+	processSDLEvents();
 }

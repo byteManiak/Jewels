@@ -18,8 +18,14 @@ void initScreen(const char *title, int xRes, int yRes, bool intScaling = true);
 
 void deinitScreen();
 
+/**
+ * @brief Begin drawing a frame.
+ */
 void beginDraw();
+
+/**
+ * @brief Finish drawing a frame.
+ */
 void endDraw();
-void draw();
 
 void drawRectangle(int x, int y, int w, int h, int color, bool fill = false);
