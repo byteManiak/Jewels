@@ -83,12 +83,9 @@ bool MainMenu::update()
 			retVal = true;
 		}
 
-		drawText("a game by bytemaniak", 1, 1);
+		drawText("a game by bytemaniak", 6, 1);
 
-		drawText("press enter to play", 5, 100);
-		drawText("controls:", 45, 116);
-		drawText("hold z to swap gems", 5, 124);
-		drawText("arrows to move", 25, 132);
+		drawText("press enter to play", 10, 100);
 	}
 
 	drawTexture("logo", 31, logoY, LOGO_SIZE_X*2, LOGO_SIZE_Y*2, 0, 0, LOGO_SIZE_X, LOGO_SIZE_Y);
