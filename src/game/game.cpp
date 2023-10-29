@@ -4,8 +4,6 @@
 
 #include <ctime>
 
-Sprite *test;
-
 bool isWindowClosed = false;
 
 void windowEvent(SDL_Event ev)
@@ -40,8 +38,6 @@ Game::Game()
 	createTexture("assets/arrows.pcx", "arrows");
 
 	createMusic("assets/music.wav");
-
-	test = new Sprite("gem1", 15, 15, 6, 200);
 
 	menu = new MainMenu();
 
