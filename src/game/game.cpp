@@ -35,7 +35,6 @@ Game::Game()
 	createTexture("assets/jewel4.pcx", "gem4");
 	createTexture("assets/jewel5.pcx", "gem5");
 	createTexture("assets/jewel6.pcx", "gem6");
-	createTexture("assets/arrows.pcx", "arrows");
 
 	createMusic("assets/music.wav");
 

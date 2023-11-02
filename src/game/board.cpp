@@ -125,13 +125,11 @@ Board::Board()
 	createSound("assets/levelup.wav", "levelup");
 	createSound("assets/gameover.wav", "gameover");
 
-	arrows = new Sprite("arrows", 9, 9, 4, 0);
 	pauseMenu = new PauseMenu();
 }
 
 Board::~Board()
 {
-	delete arrows;
 	for(int i = 0; i < 8; i++)
 	for(int j = 0; j < 8; j++)
 		delete gems[i][j];

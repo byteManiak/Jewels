@@ -76,8 +76,6 @@ private:
 	void checkGameover();
 	bool gameover = false;
 
-	Sprite *arrows;
-
 	std::vector<ProgressGem> progressGems;
 
 	PauseMenu *pauseMenu;
